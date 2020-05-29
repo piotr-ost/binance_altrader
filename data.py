@@ -27,8 +27,8 @@ class SpotData:
 			'number of trades',
 			'_','_','_'])
 		df.set_index('open time',inplace=True)
-		df = df[['open','high','low','close','volume']]
-		#df = pd.to_numeric(df)
+		df = df[['open','high','low','close','volume','quote asset volume']]
+		df = df.apply(pd.to_numeric)
 		df.index = pd.to_datetime(df.index, unit='ms')
 		return df
 
@@ -51,6 +51,7 @@ class SpotData:
 		return ATR
 	
 	def get_mfi(self):
+		#this compared to tradingview isnt perfect, but more less like it, other ind work fine
 		df = self.get_data()
 		df['MFI'] = mfi(
     		close_data=df['close'],
@@ -61,10 +62,12 @@ class SpotData:
 		MFI = df['MFI']
 		return MFI 
 
-from client import client
-#print(SpotData(client,'ETHUSDT','5m').get_mfi())
-print(SpotData(client,'BTCUSDT','5m').get_data()['volume'][-1])
+	def last_price(self):
+		last_price=round(float(self.client.get_symbol_ticker(
+			symbol=self.symbol)['price']),2)
+		return last_price
 
-#choose the best oscillator
-#figure a strategy for buying altcoins
-#and many many more things lol
+	def weekly_open(self): 
+		df = SpotData(self.client,self.symbol,'1w').get_data()
+		weekly_open = df['open'][-1]
+		return weekly_open
