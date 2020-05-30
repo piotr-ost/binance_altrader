@@ -26,11 +26,11 @@ class Indicators(SpotData):
 	def get_atr(self):
 		df = self.get_data()
 		df['ATR'] = atr(df['close'],14)
-		ATR = df['ATR']
+		ATR = df['ATR'][-1]
 		return ATR
 	
 	def get_mfi(self):
-		#this compared to tradingview isnt perfect, but more less like it, other ind work fine
+		#isnt 1:1 to tv, but pretty much like it, other ind work fine
 		df = self.get_data()
 		df['MFI'] = mfi(
     		close_data=df['close'],
