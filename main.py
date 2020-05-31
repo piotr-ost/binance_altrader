@@ -18,7 +18,7 @@ class Main:
 		self.symbol = symbol
 		self.trade = SpotTrade(client,symbol)
 		self.data = SpotData(client,symbol,interval)
-		self.indicators = Indicators(client,symbol,interval)
+		self.indicators = Indicators(client,symbol,interval)		
 	
 	def converter(self,quantity):
 		'''
@@ -40,6 +40,11 @@ class Main:
 
 	
 	def mfi_swing(self,quantity):
+		'''
+		NOTE! using weekly open and daily open to point trend is only good for very short timeframes,
+		a better way for most timeframes would be to use weekly open and some other trend tool,
+		for example a moving average, continue research
+		'''
 		#this one just buys when crosess 10 and sells when hits 80 
 		#if self.trade.asset_locked_balance() == 0: #and available funds:
 		last_price = self.data.last_price()
@@ -63,15 +68,25 @@ class Main:
 				self.trade.oco_sell(take_profit,stop_loss,self.converter(quantity))
 
 if __name__=='__main__':
+	m = Main('BTCUSDT','15m')
+	m.trade.oco_sell(9570,9330,m.converter(10))
 	#btc is in nice uptrend, so we trading btc pairs
-	while 1:
-		pool = [x['symbol'] for x in Main.client.get_all_tickers() if x['symbol'][-3:] == 'BTC']
-		for symbol in pool:
-			Main(symbol,'5m').mfi_swing(10)
-	'''fix:
+	# while 1:
+	# 	pool = [x['symbol'] for x in Main.client.get_all_tickers() if x['symbol'][-3:] == 'BTC']
+	# 	for symbol in pool:
+	# 		Main(symbol,'5m').mfi_swing(10)
+	'''
+	fix:
 	1) APIError(code=-1100): Illegal characters found in parameter 'price'; legal range is '^([0-9]{1,20})([0-9]{1,20})?$'.
 	2) APIError(code=-1111): Precision is over the maximum defined for this asset.
 	Symbol: LTCBTC            
 	Price: 0.004909            
 	Quantity: 0.21            
-	Time: 18:00:35'''
+	Time: 18:00:35
+	3) APIError(code=-1013): Stop loss orders are not supported for this symbol.
+	add:
+	automatically add positions to favourites
+	check current free balance, trade if free
+	consider fibonacci an awesome strategy, peaks from codewars
+	rest api forex try to connect using technique from video spotify
+	'''
