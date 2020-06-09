@@ -18,13 +18,13 @@ class SpotTrade:
 				symbol=self.symbol,
 				quantity=quantity)
 			print(f'Bought.\
-            \nSymbol: {self.symbol}\
-            \nPrice: {self.last_price()}\
-            \nQuantity: {quantity}\
-            \nTime: {self.current_time()}')
+				\nSymbol: {self.symbol}\
+				\nPrice: {self.last_price()}\
+				\nQuantity: {quantity}\
+				\nTime: {self.current_time()}')
 		except Exception as e:
 			print(e)
-
+                        
 	def oco_sell(self,price,stopPrice,quantity):
 		'''
 		oco can only be put when already in position
@@ -36,11 +36,26 @@ class SpotTrade:
 			price=price,
 			stopPrice=stopPrice)
 			print(f'f"OCO has been submitted.\
-            \nSymbol: {self.symbol}\
-            \nTake Profit: {price}\
-            \nStop Loss: {stopPrice}\
-            \nQuantity: {quantity}\
-            \nTime: {self.current_time()}')
+				\nSymbol: {self.symbol}\
+				\nTake Profit: {price}\
+				\nStop Loss: {stopPrice}\
+				\nQuantity: {quantity}\
+				\nTime: {self.current_time()}')
+		except Exception as e:
+			print(e)
+
+	def limit_sell(self,price,quantity):
+		try:
+			self.client.order_limit(
+				symbol=self.symbol,
+				side='sell',
+				quantity=quantity,
+				price=price)
+			print(f'Limit sell has been submitted.\
+				\nSymbol: {self.symbol}\
+				\nPrice: {price}\
+				\nQuantity: {quantity}\
+				\nTime: {self.current_time()}')
 		except Exception as e:
 			print(e)
 
@@ -64,7 +79,7 @@ class SpotTrade:
 			asset = symbol[:-3]
 		if symbol[-4:] == 'USDT':
 			asset = symbol[:-4]
-		current_qty = self.client.get_asset_balance(asset)['locked']
+		current_qty = self.client.get_asset_balance(asset)['free']
 		return current_qty
 
 	@staticmethod

@@ -4,12 +4,26 @@ from client import client
 from cross_overs import CrossesOver,CrossesUnder
 from indicators import Indicators
 import time
+import webbrowser
 
 class Main:
 
 	'''
 	if btc in uptrend - trade btc pairings, hold btc
 	if btc is falling - trade usdt pairings, hold tether
+	fix:
+	1) APIError(code=-1111): Precision is over the maximum defined for this asset.
+	Symbol: LTCBTC
+	Price: 0.004909
+	Quantity: 0.21
+	Time: 18:00:35
+	2) APIError(code=-1013): Stop loss orders are not supported for this symbol.
+	add:
+	consider fibonacci an awesome strategy, peaks from codewars
+	rest api forex try to connect using technique from video spotify
+	add volume param and whenever volume is significantly higher on 1 min -
+	trigger a buy signal
+	(lets say average of the day for the given interval
 	'''
 
 	client=client
@@ -18,7 +32,8 @@ class Main:
 		self.symbol = symbol
 		self.trade = SpotTrade(client,symbol)
 		self.data = SpotData(client,symbol,interval)
-		self.indicators = Indicators(client,symbol,interval)		
+		self.indicators = Indicators(client,symbol,interval)
+		self.ignored = []
 	
 	def converter(self,quantity):
 		'''
@@ -39,54 +54,48 @@ class Main:
 		return quantity/self.data.btc_price()
 
 	
-	def mfi_swing(self,quantity):
+	def altcoin_scanner(self,quantity):
 		'''
 		NOTE! using weekly open and daily open to point trend is only good for very short timeframes,
 		a better way for most timeframes would be to use weekly open and some other trend tool,
 		for example a moving average, continue research
 		'''
-		#this one just buys when crosess 10 and sells when hits 80 
-		#if self.trade.asset_locked_balance() == 0: #and available funds:
 		last_price = self.data.last_price()
 		weekly_open = self.data.weekly_open()
-		#daily_open = self.data.daily_open()
-		#for now lets try subtle trend filtering
-		if last_price > weekly_open:
-			MFI = self.indicators.get_mfi()
-			print(f'symbol: {self.symbol}, last two MFI vals: {MFI[-2]}, {MFI[-1]}')
+		daily_open = self.data.daily_open()
+		if last_price > weekly_open and symbol not in self.ignored:
+			MFI = round(self.indicators.get_mfi(),2)
+			print(f'Symbol: {self.symbol},\
+			 \nLatest MFI vals: {MFI[-2]}, {MFI[-1]}\
+			 \nDaily change: {round((1-last_price/daily_open)*100,2)}%\
+			 \n------------')
 			if CrossesOver(MFI,20):
 				ATR = Indicators(client,self.symbol,'4h').get_atr()
 				take_profit = last_price + 2*ATR
-				stop_loss = last_price + ATR
-				# print(
-				# 	f'Buy signal!\
-				# 	\nEntry: {last_price}\
-				# 	\nTake Profit: {take_profit}\
-				# 	\nStop Loss: {stop_loss}\
-				# 	\nTime: {self.trade.current_time()}')
-				self.trade.market_order_buy(self.converter(quantity))
-				self.trade.oco_sell(take_profit,stop_loss,self.converter(quantity))
+				stop_loss = last_price - ATR
+				print(
+					f'Buy signal!\
+					\nEntry: {last_price}\
+					\nTake Profit: {take_profit}\
+					\nStop Loss: {stop_loss}\
+					\nTime: {self.trade.current_time()}\
+					\nShow chart? (y/n)'
+				)
+				if input() == 'y':
+					#link assumes we are trading -btc pairs
+					webbrowser.open(f'https://www.binance.com/en/trade/pro/{self.symbol[:-3]}_{self.symbol[-3:]}')
+
+				print('Enter? (y/n)')
+				if  input() == 'y':
+					qty = self.converter(quantity)
+					self.trade.market_order_buy(qty)
+					self.trade.oco_sell(int(take_profit),int(stop_loss),qty)
+					self.ignored.append(self.symbol)
 
 if __name__=='__main__':
-	m = Main('BTCUSDT','15m')
-	m.trade.oco_sell(9570,9330,m.converter(10))
-	#btc is in nice uptrend, so we trading btc pairs
-	# while 1:
-	# 	pool = [x['symbol'] for x in Main.client.get_all_tickers() if x['symbol'][-3:] == 'BTC']
-	# 	for symbol in pool:
-	# 		Main(symbol,'5m').mfi_swing(10)
-	'''
-	fix:
-	1) APIError(code=-1100): Illegal characters found in parameter 'price'; legal range is '^([0-9]{1,20})([0-9]{1,20})?$'.
-	2) APIError(code=-1111): Precision is over the maximum defined for this asset.
-	Symbol: LTCBTC            
-	Price: 0.004909            
-	Quantity: 0.21            
-	Time: 18:00:35
-	3) APIError(code=-1013): Stop loss orders are not supported for this symbol.
-	add:
-	automatically add positions to favourites
-	check current free balance, trade if free
-	consider fibonacci an awesome strategy, peaks from codewars
-	rest api forex try to connect using technique from video spotify
-	'''
+	while 1:
+		pool = [x['symbol'] for x in client.get_all_tickers() if x['symbol'][-3:] == 'BTC']
+		for symbol in pool:
+			a = Main(symbol,'5m')
+			a.altcoin_scanner(10)
+		time.sleep(1)
