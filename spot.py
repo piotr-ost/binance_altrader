@@ -73,14 +73,19 @@ class SpotTrade:
 		current_qty = self.client.get_asset_balance(asset)['locked']
 		return current_qty
 
-	def asset_free_balance(self):
-		symbol = self.symbol
-		if symbol[-3:] == 'BTC':
-			asset = symbol[:-3]
-		if symbol[-4:] == 'USDT':
-			asset = symbol[:-4]
-		current_qty = self.client.get_asset_balance(asset)['free']
-		return current_qty
+	def asset_free_balance(self,asset):
+		if asset is not None:
+			current_qty = self.client.get_asset_balance(asset)['free']
+			return current_qty
+
+		else:
+			symbol = self.symbol
+			if symbol.endswith('BTC'):
+				asset = symbol[:-3]
+			if symbol.endswith('USDT'):
+				asset = symbol[:-4]
+			current_qty = self.client.get_asset_balance(asset)['free']
+			return current_qty
 
 	@staticmethod
 	def current_time():

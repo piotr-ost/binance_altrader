@@ -22,6 +22,12 @@ class Indicators(SpotData):
 		df['MA'] = sma(df['close'],period)
 		MA = df['MA']
 		return MA
+
+	@staticmethod
+	def get_ma_from_df(period,df):
+		df['MA'] = sma(df['close'], period)
+		MA = df['MA']
+		return MA
 	
 	def get_atr(self):
 		df = self.get_data()

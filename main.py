@@ -11,13 +11,17 @@ class Main:
 	'''
 	if btc in uptrend - trade btc pairings, hold btc
 	if btc is falling - trade usdt pairings, hold tether
-	fix:
-	1) APIError(code=-1111): Precision is over the maximum defined for this asset.
+
+	#TODO fix: (sorry for using this docs as a notepad)
+	1) APIError(code=-1111):
+	Precision is over the maximum defined for this asset.
 	Symbol: LTCBTC
 	Price: 0.004909
 	Quantity: 0.21
 	Time: 18:00:35
-	2) APIError(code=-1013): Stop loss orders are not supported for this symbol.
+
+	2) APIError(code=-1013):
+	Stop loss orders are not supported for this symbol.
 	add:
 	consider fibonacci an awesome strategy, peaks from codewars
 	rest api forex try to connect using technique from video spotify
@@ -43,9 +47,9 @@ class Main:
 		min_qty = self.client.get_symbol_info(
 			self.symbol)['filters'][2]['minQty']
 		precision = min_qty.split('.')[1].find('1') + 1
-		if self.symbol[-3:] == 'BTC':
+		if self.symbol.endswith('BTC'):
 			quantity = self.to_btc(quantity)/self.data.last_price()
-		if self.symbol[-4:] == 'USDT':
+		if self.symbol.endswith('USDT'):
 			quantity = quantity/self.data.last_price()
 		return round(quantity,precision) 
 
@@ -53,7 +57,7 @@ class Main:
 	def to_btc(self,quantity):
 		return quantity/self.data.btc_price()
 
-	
+
 	def altcoin_scanner(self,quantity):
 		'''
 		NOTE! using weekly open and daily open to point trend is only good for very short timeframes,
@@ -94,8 +98,9 @@ class Main:
 
 if __name__=='__main__':
 	while 1:
-		pool = [x['symbol'] for x in client.get_all_tickers() if x['symbol'][-3:] == 'BTC']
+		pool = [x['symbol'] for x in client.get_all_tickers() if x['symbol'].endswith('BTC')]
 		for symbol in pool:
 			a = Main(symbol,'5m')
 			a.altcoin_scanner(10)
-		time.sleep(1)
+			time.sleep(1)
+		time.sleep(5)

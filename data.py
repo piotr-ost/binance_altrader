@@ -46,4 +46,5 @@ class SpotData:
 		df = SpotData(self.client,self.symbol,'1d').get_data()
 		daily_open = df['open'][-1]
 		return daily_open
+
 	
