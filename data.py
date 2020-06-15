@@ -11,6 +11,7 @@ class SpotData:
 			symbol=self.symbol,
 			interval=self.interval,
 			limit=200)
+
 		df = pd.DataFrame(data,columns=[
 			'open time',
 			'open',
@@ -23,7 +24,8 @@ class SpotData:
 			'number of trades',
 			'_','_','_'])
 		df.set_index('open time',inplace=True)
-		df = df[['open','high','low','close','volume','quote asset volume']]
+		df = df[['open','high','low','close','volume',
+                    'quote asset volume']]
 		df = df.apply(pd.to_numeric)
 		df.index = pd.to_datetime(df.index, unit='ms')
 		return df

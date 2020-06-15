@@ -55,7 +55,8 @@ class Confluence(Main):
         # stop_loss = last_price - ATR
 
         last_price = self.data.last_price()
-        precision = str(last_price)[::-1].find('.') #reverse the word to get decimal places
+        #reverse the word to get intstrument precision
+        precision = str(last_price)[::-1].find('.') 
         take_profit = round(last_price*1.04, precision)
         stop_loss = round(last_price*0.96,precision)
 
@@ -103,10 +104,11 @@ class Confluence(Main):
         #stop_loss = last_price - ATR
 
         last_price = self.data.last_price()
-        precision = str(last_price)[::-1].find('.')  # reverse the word to get decimal places
+        #reverse the word to get intstrument precision
+        precision = str(last_price)[::-1].find('.')
         take_profit = round(last_price * 1.04, precision)
         stop_loss = round(last_price * 0.96, precision)
-
+        
         print(f'\
             \nEntry: {self.data.last_price()} \
             \nTake Profit: {take_profit} \
