@@ -18,4 +18,6 @@ v1.2
 - 
 - new strategy that checks whether a given condition is satisfied among
  all timeframes
-- idea: that strategy can also be used along with another oscillator-based strategy 
+- idea: that strategy can also be used along with another oscillator-based strategy
+- introduced a bit of utility in form of a tool for checking balances and 
+instantly selling all currently held assets
