@@ -1,6 +1,6 @@
 # Binance ALTrader
 
-#####altcoin trading bot for the binance exchange
+##### altcoin trading bot for the binance exchange
  
 Primary idea was to scan all altcoins and buy volume spikes on low 
 timeframes when higher timeframes RSI still isn't oversold.
