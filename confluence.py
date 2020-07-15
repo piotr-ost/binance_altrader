@@ -64,7 +64,7 @@ class Confluence(Main):
             \nEntry: {self.data.last_price()} \
             \nTake Profit: {take_profit} \
             \nStop Loss: {stop_loss} \
-            \nTime: {self.trade.current_time()}\
+            \nTime: {current_time()}\
             \nEnter? (y/n)')
 
         if input() == 'y':
@@ -113,7 +113,7 @@ class Confluence(Main):
             \nEntry: {self.data.last_price()} \
             \nTake Profit: {take_profit} \
             \nStop Loss: {stop_loss} \
-            \nTime: {self.trade.current_time()}\
+            \nTime: {current_time()}\
             \nEnter? (y/n)')
 
         if input() == 'y':
