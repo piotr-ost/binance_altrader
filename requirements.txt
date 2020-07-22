@@ -1,4 +1,3 @@
-#quite a long list but most of that is common for most envs
 attrs==19.3.0
 autobahn==20.4.3
 Automat==20.2.0

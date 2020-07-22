@@ -1,8 +1,9 @@
-from data import SpotData 
-from pyti.simple_moving_average import simple_moving_average as sma
-from pyti.relative_strength_index import relative_strength_index as rsi
 from pyti.average_true_range import average_true_range as atr
 from pyti.money_flow_index import money_flow_index as mfi
+from pyti.relative_strength_index import relative_strength_index as rsi
+from pyti.simple_moving_average import simple_moving_average as sma
+
+from util.data import SpotData
 
 
 class Indicators(SpotData):

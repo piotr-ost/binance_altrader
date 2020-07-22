@@ -1,24 +1,27 @@
-'''
-quick balances tool to use using terminal alias to monitor live performance
-possible improvements could be ROE of every asset bought
-'''
-from client import client
 import webbrowser
 
-pool = [x['symbol'] for x in client.get_all_tickers() if x['symbol'][-3:] == 'BTC']
+from util.client import client
 
-data = client.get_account()
-assets = [d['asset'] for d in data['balances'] if float(d['free']) != 0 or float(d['locked']) != 0]
 
-balances = [client.get_asset_balance(asset)['free'] for asset in assets]
-l = zip(assets,balances)
+def get_balances():
+    pool = [x['symbol'] for x in client.get_all_tickers()
+            if x['symbol'][-3:] == 'BTC']
 
-if __name__=='__main__':
+    data = client.get_account()
+    assets = [d['asset'] for d in data['balances']
+              if float(d['free']) != 0 or float(d['locked']) != 0]
+
+    balances = [client.get_asset_balance(asset)['free'] for asset in assets]
+    return zip(assets, balances)
+
+
+if __name__ == '__main__':
     print(f"Balances: ")
-    for i in l:
+    for i in get_balances():
         print(f'{i[0]}: {i[1]}')
     print('Show charts? (y/n)')
     if input() == 'y':
         for asset in assets:
-            webbrowser.open(f'https://www.binance.com/en/trade/pro/{asset}_BTC')
+            webbrowser.open(
+                f'https://www.binance.com/en/trade/pro/{asset}_BTC')
             print(f'https://www.binance.com/en/trade/pro/{asset}_BTC')

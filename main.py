@@ -1,26 +1,14 @@
-from spot import SpotTrade, current_time
-from data import SpotData
-from client import client
-from cross_overs import CrossesOver
-from indicators import Indicators
 import time
 import webbrowser
 
+from util.client import client
+from util.cross_overs import crosses_over
+from util.data import SpotData
+from util.indicators import Indicators
+from util.spot import SpotTrade, current_time
+
 
 class Main:
-
-	"""
-	if btc in uptrend - trade btc pairings, hold btc
-	if btc is falling - trade usdt pairings, hold tether
-
-	# TODO (sorry for using this docs as a notepad)
-	add:
-	consider fibonacci an awesome strategy, peaks from codewars
-	add volume param and whenever volume is significantly higher on 1 min -
-	trigger a buy signal
-	(lets say average of the day for the given interval)
-	"""
-
 	client = client
 
 	def __init__(self, symbol, interval):
@@ -50,7 +38,7 @@ class Main:
 	def altcoin_scanner(self, quantity):
 		"""
 		NOTE! using weekly open and daily open to point trend is only good for
-		very short timeframes, a better way for most time frames would be to
+		very short time frames, a better way for most time frames would be to
 		use weekly open and some other trend tool,
 		for example a moving average, continue research
 		"""
@@ -59,13 +47,14 @@ class Main:
 		daily_open = self.data.daily_open()
 		if last_price > weekly_open and self.symbol not in self.ignored:
 			MFI = round(self.indicators.get_mfi(), 2)
-			print(f'Symbol: {self.symbol},\
-				\nLatest MFI vals: {MFI[-2]}, {MFI[-1]}\
-				\nDaily change: {round((1-last_price/daily_open)*100,2)}%\
+			print(
+				f'Symbol: {self.symbol},\
+				\nLatest MFI values: {MFI[-2]}, {MFI[-1]}\
+				\nDaily change: {round((1 - last_price / daily_open) * 100, 2)}%\
 				\n------------')
-			if CrossesOver(MFI, 20):
+			if crosses_over(MFI, 20):
 				ATR = Indicators(client, self.symbol, '4h').get_atr()
-				take_profit = last_price + 2*ATR
+				take_profit = last_price + 2 * ATR
 				stop_loss = last_price - ATR
 				print(
 					f'Buy signal!\
@@ -86,7 +75,7 @@ class Main:
 					qty = self.converter(quantity)
 					self.trade.market_order_buy(qty)
 					self.trade.oco_sell(price=int(take_profit),
-										stopPrice=int(stop_loss),
+										stop_price=int(stop_loss),
 										quantity=qty,
 										)
 					self.ignored.append(self.symbol)

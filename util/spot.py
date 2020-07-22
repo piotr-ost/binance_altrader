@@ -6,11 +6,11 @@ def current_time():
 
 
 class SpotTrade:
+	""" Note:
+		1) minimum order size is 10 usd
+		2) quantities have to be in BTC
 	"""
-	Note:
-	1) minimum order size is 10 usd
-	2) quantities have to be in BTC
-	"""
+
 	def __init__(self, client, symbol):
 		self.client = client
 		self.symbol = symbol
@@ -41,20 +41,21 @@ class SpotTrade:
 		except Exception as e:
 			print(e)
 
-	def oco_sell(self, price, stopPrice, quantity):
+	def oco_sell(self, price, stop_price, quantity):
 		"""oco can only be placed when already in position"""
 		try:
 			self.client.order_oco_sell(
 				symbol=self.symbol,
 				quantity=quantity,
 				price=price,
-				stopPrice=stopPrice,
-				stopLimitPrice=stopPrice,
+				stopPrice=stop_price,
+				stopLimitPrice=stop_price,
 				stopLimitTimeInForce='GTC')
-			print(f'OCO has been submitted.\
+			print(
+				f'OCO has been submitted.\
 				\nSymbol: {self.symbol}\
 				\nTake Profit: {price}\
-				\nStop Loss: {stopPrice}\
+				\nStop Loss: {stop_price}\
 				\nQuantity: {quantity}\
 				\nTime: {current_time()}')
 		except Exception as e:
@@ -67,11 +68,12 @@ class SpotTrade:
 				side='sell',
 				quantity=quantity,
 				price=price)
-			print(f'Limit sell has been submitted.\
-			\nSymbol: {self.symbol}\
-			\nPrice: {price}\
-			\nQuantity: {quantity}\
-			\nTime: {current_time()}')
+			print(
+				f'Limit sell has been submitted.\
+				\nSymbol: {self.symbol}\
+				\nPrice: {price}\
+				\nQuantity: {quantity}\
+				\nTime: {current_time()}')
 		except Exception as e:
 			print(e)
 
