@@ -7,7 +7,7 @@ Advantage of Binance is that it's API limits are virtually non-existent.
 Note: the bot is designed mainly for trading alt coins in btc parings,
 there are less USDT pairings and they tend to follow btc a lot
 
-#### quickstart
+## quickstart
 
 install the required packages via
     
