@@ -47,7 +47,7 @@ The trend is told in one of the two:
 #### sell_all.py 
 tool to get rid of all assets in case of emergency
     
-#### some ideas and initial changelog 
+## some ideas and initial changelog 
 consider fibonacci an awesome strategy, peaks from codewars
 
 add volume param and whenever volume is significantly higher on 1 min -
