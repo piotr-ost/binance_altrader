@@ -13,9 +13,12 @@ install the required packages via
     
     pip install -r requirements
 
-run 
+insert your api_key and api_secret into ../util/client.py
+    
+and run 
 
     python <one of below>
+    
 #### balances.py
 
 quick balances tool, on running it prints assets and balances of binance wallet
